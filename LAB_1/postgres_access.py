@@ -5,7 +5,7 @@ import pandas as pd
 # Create table and relation
 #
 
-connection = psycopg2.connect(database='lab_1', user='alex', password='95qaz26plm')
+connection = psycopg2.connect(database='lab_1', user='alex', password='')
 
 cursor = connection.cursor()
 
@@ -45,7 +45,7 @@ cursor.execute("CREATE TABLE Measurments ("+
 # Insert data into table
 #
 
-areas = pd.read_csv('DB_Lab1_Data.csv')
+areas = pd.read_csv('areas.csv')
 for short_n, full_n in areas.values:
     cursor.execute("INSERT INTO Areas (short_n, full_n) "+
                    "VALUES (%s, %s )", (short_n, full_n))
@@ -74,11 +74,14 @@ cursor.execute("SELECT * FROM Measurments WHERE Date > '2001-01-01' and Date < '
 print "Task 1"
 for row in cursor:
     print row
+
+
 ##### Task 2 #####
 cursor.execute("SELECT stations, point_x, point_y FROM stations ORDER BY area;")
 print "Task 2"
 for row in cursor:
     print row
+
 
 ##### Task 3 #####
 cursor.execute("SELECT * FROM measurments WHERE Time < '12:00'")
@@ -88,16 +91,17 @@ for row in cursor:
 
 
 ##### Task 4 #####
-cursor.execute("SELECT * FROM measurments WHERE Area = 'A' or Area = 'D'")print "Task 4"
+cursor.execute("SELECT * FROM measurments WHERE Area = 'A' or Area = 'D'")
+print "Task 4"
 for row in cursor:
     print row
+
 
 ##### Task 5 #####
 cursor.execute("SELECT 2*P1+100*P2+cos(P4) AS P5 FROM measurments")
 print "Task 5"
 for row in cursor:
     print row
-
 
 cursor.close()
 connection.close()
