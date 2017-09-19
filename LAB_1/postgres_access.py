@@ -1,5 +1,7 @@
 import psycopg2
 import pandas as pd
+import numpy as np
+
 
 #
 # Create table and relation
@@ -23,7 +25,7 @@ cursor.execute("CREATE TABLE Areas("+
 #cursor.execute("DROP TABLE IF EXISTS Stations")
 cursor.execute("CREATE TABLE Stations ("+
                "Area VARCHAR(10) NOT NULL REFERENCES Areas (short_n),"+
-               "Stations SMALLINT PRIMARY KEY NOT NULL,"+
+               "Station SMALLINT PRIMARY KEY NOT NULL,"+
                "POINT_X REAL NOT NULL,"+
                "POINT_Y REAL NOT NULL)")                                
 
@@ -34,7 +36,7 @@ cursor.execute("CREATE TABLE Measurments ("+
                "Date DATE NOT NULL,"+
                "Time TIME NOT NULL,"+
                "Area VARCHAR(10) NOT NULL REFERENCES Areas (short_n),"+
-               "Station SMALLINT NOT NULL REFERENCES Stations (Stations),"+
+               "Station SMALLINT NOT NULL REFERENCES Stations (Station),"+
                "POINT_Z REAL,"+
                "P1 REAL NOT NULL,"+
                "P2 SMALLINT NOT NULL,"+
@@ -53,7 +55,7 @@ for short_n, full_n in areas.values:
 
 stations = pd.ExcelFile("DB_Lab1_Data.xls").parse('Stations')
 for area, station, point_x, point_y in stations.values:
-    cursor.execute("INSERT INTO Stations (Area, Stations, POINT_X, POINT_Y)"+
+    cursor.execute("INSERT INTO Stations (Area, Station, POINT_X, POINT_Y)"+
                    " VALUES (%s, %s, %s, %s) ", (area, station, point_x, point_y))
 
 
@@ -62,6 +64,25 @@ for date, time, area, station, point_z, p1,p2,p3,p4 in measurments.values:
     #print date, time, area, station, point_z, p1,p2,p3,p4
     cursor.execute("INSERT INTO Measurments (Date,Time,Area,Station,POINT_Z,P1,P2,P3,P4)"+
                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ", (date,time,area,station,point_z,p1,p2,p3,p4))
+
+### move point_z form measurments to stations ###
+
+cursor.execute("ALTER TABLE stations ADD COLUMN point_z real NOT NULL DEFAULT 'NaN'")
+cursor.execute("SELECT station, point_z FROM measurments WHERE point_z != 'NaN' ORDER BY station")
+
+temp_point_z = [] 
+
+for row in cursor:
+    temp_point_z.append(row)
+
+for num,val in temp_point_z:
+    print val
+    cursor.execute("UPDATE stations SET point_z = (%s) WHERE station=(%s)", (val, num))
+    
+cursor.execute("ALTER TABLE measurments DROP COLUMN point_z")
+cursor.execute("ALTER TABLE measurments DROP COLUMN area")
+
+#############################################
 
 connection.commit()
 
@@ -77,7 +98,7 @@ for row in cursor:
 
 
 ##### Task 2 #####
-cursor.execute("SELECT stations, point_x, point_y FROM stations ORDER BY area;")
+cursor.execute("SELECT station, point_x, point_y FROM stations ORDER BY area;")
 print "Task 2"
 for row in cursor:
     print row
@@ -91,11 +112,12 @@ for row in cursor:
 
 
 ##### Task 4 #####
+"""
 cursor.execute("SELECT * FROM measurments WHERE Area = 'A' or Area = 'D'")
 print "Task 4"
 for row in cursor:
     print row
-
+"""
 
 ##### Task 5 #####
 cursor.execute("SELECT 2*P1+100*P2+cos(P4) AS P5 FROM measurments")
