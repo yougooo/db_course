@@ -57,3 +57,7 @@ connection.commit()
 As result we have database:
 ![alt text](https://github.com/yougooo/db_course/blob/master/LAB_1/lab_1.png)
 
+UPDATE 
+
+If just import from source excel file without preprocesing, we catch some errors. Data have duplication, in table 'measurments' we have columns 'point_z' and 'area',  this columns describe location, but not measurment. That's why better drop 'area' column from 'measurments' table (we have same column in 'stations' table, and if  for example it is stantion '1' it is 100% 'B' area). And take data from point_z and put it into new column 'point_z' in table 'stations'. New database relations look like this:  
+![alt text](https://github.com/yougooo/db_course/blob/master/LAB_1/lab_1_2.png)
