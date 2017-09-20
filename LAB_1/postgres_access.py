@@ -98,7 +98,7 @@ for row in cursor:
 
 
 ##### Task 2 #####
-cursor.execute("SELECT station, point_x, point_y FROM stations ORDER BY area;")
+cursor.execute("SELECT stations.*, areas.full_n FROM stations JOIN areas ON stations.area=areas.short_n ORDER BY full_n;")
 print "Task 2"
 for row in cursor:
     print row
@@ -112,12 +112,13 @@ for row in cursor:
 
 
 ##### Task 4 #####
-"""
-cursor.execute("SELECT * FROM measurments WHERE Area = 'A' or Area = 'D'")
+
+cursor.execute("SELECT measurments.*, areas.full_n FROM measurments JOIN stations ON measurments.station=stations.station"+
+               " JOIN areas ON stations.area=areas.short_n "+
+               "WHERE full_n = 'Alice' or full_n = 'Darwin'")
 print "Task 4"
 for row in cursor:
     print row
-"""
 
 ##### Task 5 #####
 cursor.execute("SELECT 2*P1+100*P2+cos(P4) AS P5 FROM measurments")
