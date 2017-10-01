@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  table, th, td {
+  border: 1px solid black;      
+  }
+  </style>
+</head>
+<body>
+<h2>Measurment table</h2></p>
+
+{% if info%}
+<select name="area" id="id_area" required>
+  <option value="" selected>---------</option>
+  {%for area in areas%}
+  <option value={{area.full_n}}>{{area.full_n}}</option>
+  {%endfor%}
+</select>
+
+<div class='main_table'>
+<table>
+   <tr>
+      <th>id</th>
+      <th>date</th>
+      <th>time</th>
+      <th>station</th>
+      <th>area</th>
+      <th>p1</th>
+      <th>p2</th>
+      <th>p3</th>
+      <th>p4</th>
+   </tr>
+   {%for data in info%}
+       <tr>
+         <td>{{data.id}}</td>
+         <td>{{data.date}}</td>
+         <td>{{data.time}}</td>
+         <td>{{data.station}}</td>
+         <td>{{data.area}}</td>
+         <td>{{data.p1}}</td>
+         <td>{{data.p2}}</td>
+         <td>{{data.p3}}</td>
+         <td>{{data.p4}}</td>
+       </tr>
+   {%endfor%}
+</table>
+<h2>Aggregation by station table</h2>
+<div class='avg_table_station'>
+<table>
+  <tr>
+    <th>Station</th>
+    <th>avg_p1</th>
+    <th>avg_p2</th>
+    <th>avg_p3</th>
+    <th>avg_p4</th>
+  </tr>
+  {%for station,p1,p2,p3,p4 in zone_avg%}
+  <tr>
+    <td>{{station}}</td>
+    <td>{{p1}}</td>
+    <td>{{p2}}</td>
+    <td>{{p3}}</td>
+    <td>{{p4}}</td>
+  </tr>
+  {%endfor%}
+</table>
+</div>
+<h2>Aggregation by areas table</h2>
+<div class='avg_table_area'>
+<table>
+  <tr>
+    <th>Area</th>
+    <th>avg_p1</th>
+    <th>avg_p2</th>
+    <th>avg_p3</th>
+    <th>avg_p4</th>
+  </tr>
+  {%for area,p1,p2,p3,p4 in zone_avg%}
+  <tr>
+    <td>{{area}}</td>
+    <td>{{p1}}</td>
+    <td>{{p2}}</td>
+    <td>{{p3}}</td>
+    <td>{{p4}}</td>
+  </tr>
+  {%endfor%}
+</table>
+</div>
+
+{%else%}
+<h3>No data to display<h3>
+{%endif%}
+</body>
+</html>
