@@ -16,23 +16,23 @@ cursor.execute("DROP TABLE IF EXISTS Stations")
 cursor.execute("DROP TABLE IF EXISTS Areas")
 
 
-#cursor.execute("DROP TABLE IF EXISTS Areas")
 cursor.execute("CREATE TABLE Areas("+
-               "short_n VARCHAR(10) PRIMARY KEY NOT NULL,"+
-               "full_n VARCHAR(255) NOT NULL)")
+               "areas_id SERIAL,"+
+               "short_n VARCHAR(10) UNIQUE NOT NULL,"+
+               "full_n VARCHAR(255) NOT NULL,"+
+               "PRIMARY KEY(short_n,full_n))")
 
 
-#cursor.execute("DROP TABLE IF EXISTS Stations")
 cursor.execute("CREATE TABLE Stations ("+
-               "Area VARCHAR(10) NOT NULL REFERENCES Areas (short_n),"+
-               "Station SMALLINT PRIMARY KEY NOT NULL,"+
+               "Area VARCHAR(10) REFERENCES Areas (short_n),"+
+               "Station SMALLINT UNIQUE NOT NULL,"+
                "POINT_X REAL NOT NULL,"+
-               "POINT_Y REAL NOT NULL)")                                
+               "POINT_Y REAL NOT NULL,"+
+               "PRIMARY KEY(Station, Area))")                                
 
 
-#cursor.execute("DROP TABLE IF EXISTS Measurments")
 cursor.execute("CREATE TABLE Measurments ("+
-               "id SERIAL PRIMARY KEY,"+
+               "id SERIAL,"+
                "Date DATE NOT NULL,"+
                "Time TIME NOT NULL,"+
                "Area VARCHAR(10) NOT NULL REFERENCES Areas (short_n),"+
@@ -41,7 +41,8 @@ cursor.execute("CREATE TABLE Measurments ("+
                "P1 REAL NOT NULL,"+
                "P2 SMALLINT NOT NULL,"+
                "P3 SMALLINT NOT NULL,"+
-               "P4 REAL NOT NULL)")
+               "P4 REAL NOT NULL,"+
+               "PRIMARY KEY(Date, Time, Area, Station))")
 
 #
 # Insert data into table
@@ -80,7 +81,7 @@ for num,val in temp_point_z:
     cursor.execute("UPDATE stations SET point_z = (%s) WHERE station=(%s)", (val, num))
     
 cursor.execute("ALTER TABLE measurments DROP COLUMN point_z")
-cursor.execute("ALTER TABLE measurments DROP COLUMN area")
+#cursor.execute("ALTER TABLE measurments DROP COLUMN area")
 
 #############################################
 
