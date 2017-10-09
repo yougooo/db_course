@@ -8,7 +8,6 @@ import numpy as np
 #
 
 connection = psycopg2.connect(database='lab_1', user='alex', password='')
-
 cursor = connection.cursor()
 
 cursor.execute("DROP TABLE IF EXISTS Measurments")
@@ -17,32 +16,29 @@ cursor.execute("DROP TABLE IF EXISTS Areas")
 
 
 cursor.execute("CREATE TABLE Areas("+
-               "areas_id SERIAL,"+
-               "short_n VARCHAR(10) UNIQUE NOT NULL,"+
-               "full_n VARCHAR(255) NOT NULL,"+
-               "PRIMARY KEY(short_n,full_n))")
+               "short_n VARCHAR(10) NOT NULL PRIMARY KEY,"+
+               "full_n VARCHAR(255) NOT NULL)")
 
 
 cursor.execute("CREATE TABLE Stations ("+
-               "Area VARCHAR(10) REFERENCES Areas (short_n),"+
-               "Station SMALLINT UNIQUE NOT NULL,"+
+               "Area VARCHAR(10) NOT NULL REFERENCES Areas(short_n),"+
+               "Station int4 NOT NULL,"+
+               "station_id SERIAL PRIMARY KEY,"+
                "POINT_X REAL NOT NULL,"+
                "POINT_Y REAL NOT NULL,"+
-               "PRIMARY KEY(Station, Area))")                                
-
+               "UNIQUE(Area, Station))")                                
 
 cursor.execute("CREATE TABLE Measurments ("+
                "id SERIAL,"+
                "Date DATE NOT NULL,"+
                "Time TIME NOT NULL,"+
-               "Area VARCHAR(10) NOT NULL REFERENCES Areas (short_n),"+
-               "Station SMALLINT NOT NULL REFERENCES Stations (Station),"+
+               "base_station int4 REFERENCES Stations (station_id),"+
                "POINT_Z REAL,"+
-               "P1 REAL NOT NULL,"+
-               "P2 SMALLINT NOT NULL,"+
-               "P3 SMALLINT NOT NULL,"+
-               "P4 REAL NOT NULL,"+
-               "PRIMARY KEY(Date, Time, Area, Station))")
+               "P1 REAL,"+
+               "P2 SMALLINT,"+
+               "P3 SMALLINT,"+
+               "P4 REAL,"+
+               "PRIMARY KEY(Date, Time, base_station))")
 
 #
 # Insert data into table
@@ -59,18 +55,18 @@ for area, station, point_x, point_y in stations.values:
     cursor.execute("INSERT INTO Stations (Area, Station, POINT_X, POINT_Y)"+
                    " VALUES (%s, %s, %s, %s) ", (area, station, point_x, point_y))
 
-
+"""
 measurments = pd.read_csv('Measurments.csv')
 for date, time, area, station, point_z, p1,p2,p3,p4 in measurments.values:
     #print date, time, area, station, point_z, p1,p2,p3,p4
-    cursor.execute("INSERT INTO Measurments (Date,Time,Area,Station,POINT_Z,P1,P2,P3,P4)"+
-                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ", (date,time,area,station,point_z,p1,p2,p3,p4))
-
+    cursor.execute("INSERT INTO Measurments (Date,Time,Station,Area,POINT_Z,P1,P2,P3,P4)"+
+                   " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ", (date,time, station,area,point_z,p1,p2,p3,p4))
+"""
 ### move point_z form measurments to stations ###
 
 cursor.execute("ALTER TABLE stations ADD COLUMN point_z real NOT NULL DEFAULT 'NaN'")
-cursor.execute("SELECT station, point_z FROM measurments WHERE point_z != 'NaN' ORDER BY station")
-
+#cursor.execute("SELECT station, point_z FROM measurments WHERE point_z != 'NaN' ORDER BY station")
+"""
 temp_point_z = [] 
 
 for row in cursor:
@@ -80,8 +76,9 @@ for num,val in temp_point_z:
     print val
     cursor.execute("UPDATE stations SET point_z = (%s) WHERE station=(%s)", (val, num))
     
+"""
 cursor.execute("ALTER TABLE measurments DROP COLUMN point_z")
-#cursor.execute("ALTER TABLE measurments DROP COLUMN area")
+#cursor.execute("ALTER TABLE measurments DROP COLUMN station")
 
 #############################################
 
@@ -90,7 +87,7 @@ connection.commit()
 #
 # Selection from database 
 #
-
+"""
 ##### Task 1 #####
 cursor.execute("SELECT * FROM Measurments WHERE Date > '2001-01-01' and Date < '2003-01-01';")
 print "Task 1"
@@ -126,7 +123,7 @@ cursor.execute("SELECT 2*P1+100*P2+cos(P4) AS P5 FROM measurments")
 print "Task 5"
 for row in cursor:
     print row
-
+"""
 cursor.close()
 connection.close()
 
