@@ -61,3 +61,8 @@ UPDATE
 
 If just import from source excel file without preprocesing, we catch some errors. Data have duplication, in table 'measurments' we have columns 'point_z' and 'area',  this columns describe location, but not measurment. That's why better drop 'area' column from 'measurments' table (we have same column in 'stations' table, and if  for example it is stantion '1' it is 100% 'B' area). And take data from point_z and put it into new column 'point_z' in table 'stations'. New database relations look like this:  
 ![alt text](https://github.com/yougooo/db_course/blob/master/LAB_1/lab_1_2.png)
+
+
+UPDATE
+So, I have had wrong vision about column 'area' in table 'measurements', not for this dataset, but when user start added new 'station' we may catch situation, like two station K_51 and D_51 at one time  in table 'station', but database structure define above, don't gave any promission to do this , because field in column 'station'  like primary key and foring key(in postgresql any foring key must be unique) was unique. Fixed like unique together 'station' , 'area' and primary key 'station_id' ( this field is foring key for 'base_station' field in table 'measurments'). 
+![alt text](https://github.com/yougooo/db_course/blob/master/LAB_1/lab_1_3.png)
