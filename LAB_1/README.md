@@ -64,5 +64,6 @@ If just import from source excel file without preprocesing, we catch some errors
 
 
 UPDATE
+
 So, I have had wrong vision about column 'area' in table 'measurements', not for this dataset, but when user start added new 'station' we may catch situation, like two station K_51 and D_51 at one time  in table 'station', but database structure define above, don't gave any promission to do this , because field in column 'station'  like primary key and foring key(in postgresql any foring key must be unique) was unique. Fixed like unique together 'station' , 'area' and primary key 'station_id' ( this field is foring key for 'base_station' field in table 'measurments'). 
 ![alt text](https://github.com/yougooo/db_course/blob/master/LAB_1/lab_1_3.png)
