@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+body {
+background:#92d050;
+}
+table {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+font-size: 14px;
+border: solid 1px #B9B29F;
+text-align: center;
+}
+
+th {
+background:#a8d08d;
+border-bottom: 3px solid #B9B29F;
+padding: 10px;
+border: solid 1px;
+}
+
+td {
+background: #a8d08d;
+border: solid 1px;
+padding: 10px;
+}
+.content{
+	width:50%;
+	margin:auto;
+	
+        background: #92d050;
+}
+
+.teged {
+       margin:auto;
+      
+       text-align:center;
+       font-size:35px;
+       font-family:calibri;
+}
+img {
+       display:block;
+       margin-left:auto;
+       margin-right:auto;
+       width:70%;
+   }
+</style>
+</head>
+<body>
+<img src= "{% static 'image/new.png' %}">
+<div class='content'>
+<div class='main_table'>	
+	<p></p>
+<div class='teged'><b>Measurment table</b></div>
+	<p></p>
+<table>
+   <tr>
+      <th>date</th>
+      <th>time</th>
+      <th>station</th>
+      <th>checked</th>
+      <th>p1</th>
+      <th>p2</th>
+      <th>p3</th>
+      <th>p4</th>
+      <th>p7</th>
+   </tr>
+   {%for data in info%}
+       <tr>
+         <td>{{data.date}}</td>
+         <td>{{data.time}}</td>
+         <td>{{data.base_station}}</td>
+	 <td>{{data.checked}}</td>
+         <td>{{data.p1}}</td>
+         <td>{{data.p2}}</td>
+         <td>{{data.p3}}</td>
+         <td>{{data.p4}}</td>
+	 <td>{{data.p7}}</td>
+       </tr>
+   {%endfor%}
+</table>
+<div class='teged'><b>Mean values table</b></div>
+<div class='avg_table_station'>
+<table>
+  <tr>
+    <th>avg_p1</th>
+    <th>avg_p2</th>
+    <th>avg_p3</th>
+    <th>avg_p4</th>
+  </tr>
+  {%for p1,p2,p3,p4 in zone_avg%}
+  <tr>
+    <td>{{p1}}</td>
+    <td>{{p2}}</td>
+    <td>{{p3}}</td>
+    <td>{{p4}}</td>
+  </tr>
+  {%endfor%}
+</table>
+</div>
+</div>
+</div>
+</body>
+</html>
